@@ -1,0 +1,8 @@
+pandas
+numpy
+requests
+jupyter
+matplotlib
+seaborn
+yfinance
+# run 'conda install pysqlite3' for this to avoid errors
