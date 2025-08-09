@@ -1,3 +1,16 @@
+#Ignore these folders
+venv/
+logs/
+Artifacts/
+
+#Ignore environemental variables
 .env
-/venv
-*test.py
+
+#Ignore these files
+.DS_Store
+*.csv 
+
+#Ignore metadata folders (commonly generated during builds)
+*.egg-info/
+*__pycache__/
+*.ipynb_checkpoints/

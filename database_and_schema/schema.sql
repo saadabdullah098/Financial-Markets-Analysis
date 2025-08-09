@@ -24,8 +24,8 @@ CREATE TABLE assets (
     -- Classification
     sector VARCHAR(100),
     industry VARCHAR(150),
-    asset_type VARCHAR(20) CHECK (asset_type IN ('Stock', 'ETF', 'Index', 'Bond', 'Commodity')),
-    
+    asset_type VARCHAR(20) ,
+    -- CHECK (asset_type IN ('Stock', 'ETF', 'Index', 'Bond', 'Commodity'))
     -- Financial Metrics (from OVERVIEW)
     market_capitalization BIGINT,
     ebitda BIGINT,

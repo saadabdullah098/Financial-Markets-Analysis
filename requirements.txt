@@ -5,4 +5,7 @@ jupyter
 matplotlib
 seaborn
 yfinance
+riskfolio-lib
+pyfolio
+dotenv
 # run 'conda install pysqlite3' for this to avoid errors

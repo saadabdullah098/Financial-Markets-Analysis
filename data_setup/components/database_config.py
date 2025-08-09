@@ -10,7 +10,7 @@ import os
 from typing import List, Dict, Any, Optional
 
 class FinancialDatabase:
-    def __init__(self, db_path: str = "FMA/database/financial_markets.db"):
+    def __init__(self, db_path: str = "database_and_schema/financial_markets.db"):
         """
         Initialize the database connection
         
@@ -37,7 +37,7 @@ class FinancialDatabase:
             self.connection.close()
             print("Database connection closed")
     
-    def create_database(self, schema_file: str = 'schema.sql'):
+    def create_database(self, schema_file: str = 'database_and_schema/schema.sql'):
         """
         Create the database tables using the SQL schema
         
@@ -72,20 +72,7 @@ class FinancialDatabase:
         
         cursor = self.connection.cursor()
         
-        insert_sql = """
-        INSERT OR REPLACE INTO assets 
-        (symbol, name, description, cik, exchange, currency, country, sector, industry, asset_type,
-         market_capitalization, ebitda, pe_ratio, peg_ratio, book_value, dividend_per_share, 
-         dividend_yield, eps, revenue_per_share_ttm, profit_margin, operating_margin_ttm,
-         return_on_assets_ttm, return_on_equity_ttm, revenue_ttm, gross_profit_ttm, 
-         diluted_eps_ttm, quarterly_earnings_growth_yoy, quarterly_revenue_growth_yoy,
-         analyst_target_price, trailing_pe, forward_pe, price_to_sales_ratio_ttm,
-         price_to_book_ratio, ev_to_revenue, ev_to_ebitda, beta, week_52_high, week_52_low,
-         day_50_moving_average, day_200_moving_average, shares_outstanding, dividend_date,
-         ex_dividend_date)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """
-        
+
         try:
             # Helper function to clean and convert values
             def clean_value(value, data_type='str'):
@@ -110,51 +97,68 @@ class FinancialDatabase:
                     return None
                 return str(value) if value else None
             
-            cursor.execute(insert_sql, (
-                asset_data.get('Symbol'),
-                asset_data.get('Name'),
-                asset_data.get('Description'),
-                asset_data.get('CIK'),
-                asset_data.get('Exchange'),
-                asset_data.get('Currency', 'USD'),
-                asset_data.get('Country'),
-                asset_data.get('Sector'),
-                asset_data.get('Industry'),
-                asset_data.get('AssetType', 'Stock'),
-                clean_value(asset_data.get('MarketCapitalization'), 'int'),
-                clean_value(asset_data.get('EBITDA'), 'int'),
-                clean_value(asset_data.get('PERatio'), 'float'),
-                clean_value(asset_data.get('PEGRatio'), 'float'),
-                clean_value(asset_data.get('BookValue'), 'float'),
-                clean_value(asset_data.get('DividendPerShare'), 'float'),
-                clean_value(asset_data.get('DividendYield'), 'float'),
-                clean_value(asset_data.get('EPS'), 'float'),
-                clean_value(asset_data.get('RevenuePerShareTTM'), 'float'),
-                clean_value(asset_data.get('ProfitMargin'), 'float'),
-                clean_value(asset_data.get('OperatingMarginTTM'), 'float'),
-                clean_value(asset_data.get('ReturnOnAssetsTTM'), 'float'),
-                clean_value(asset_data.get('ReturnOnEquityTTM'), 'float'),
-                clean_value(asset_data.get('RevenueTTM'), 'int'),
-                clean_value(asset_data.get('GrossProfitTTM'), 'int'),
-                clean_value(asset_data.get('DilutedEPSTTM'), 'float'),
-                clean_value(asset_data.get('QuarterlyEarningsGrowthYOY'), 'float'),
-                clean_value(asset_data.get('QuarterlyRevenueGrowthYOY'), 'float'),
-                clean_value(asset_data.get('AnalystTargetPrice'), 'float'),
-                clean_value(asset_data.get('TrailingPE'), 'float'),
-                clean_value(asset_data.get('ForwardPE'), 'float'),
-                clean_value(asset_data.get('PriceToSalesRatioTTM'), 'float'),
-                clean_value(asset_data.get('PriceToBookRatio'), 'float'),
-                clean_value(asset_data.get('EVToRevenue'), 'float'),
-                clean_value(asset_data.get('EVToEBITDA'), 'float'),
-                clean_value(asset_data.get('Beta'), 'float'),
-                clean_value(asset_data.get('52WeekHigh'), 'float'),
-                clean_value(asset_data.get('52WeekLow'), 'float'),
-                clean_value(asset_data.get('50DayMovingAverage'), 'float'),
-                clean_value(asset_data.get('200DayMovingAverage'), 'float'),
-                clean_value(asset_data.get('SharesOutstanding'), 'int'),
-                clean_value(asset_data.get('DividendDate'), 'date'),
-                clean_value(asset_data.get('ExDividendDate'), 'date')
-            ))
+            insert_sql = """
+                INSERT OR REPLACE INTO assets 
+                (symbol, name, description, cik, exchange, currency, country, sector, industry, asset_type,
+                market_capitalization, ebitda, pe_ratio, peg_ratio, book_value, dividend_per_share, 
+                dividend_yield, eps, revenue_per_share_ttm, profit_margin, operating_margin_ttm,
+                return_on_assets_ttm, return_on_equity_ttm, revenue_ttm, gross_profit_ttm, 
+                diluted_eps_ttm, quarterly_earnings_growth_yoy, quarterly_revenue_growth_yoy,
+                analyst_target_price, trailing_pe, forward_pe, price_to_sales_ratio_ttm,
+                price_to_book_ratio, ev_to_revenue, ev_to_ebitda, beta, week_52_high, week_52_low,
+                day_50_moving_average, day_200_moving_average, shares_outstanding, dividend_date,
+                ex_dividend_date)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """
+        
+            values = (
+                    asset_data.get('Symbol'),
+                    asset_data.get('Name'),
+                    asset_data.get('Description'),
+                    asset_data.get('CIK'),
+                    asset_data.get('Exchange'),
+                    asset_data.get('Currency', 'USD'),
+                    asset_data.get('Country'),
+                    asset_data.get('Sector'),
+                    asset_data.get('Industry'),
+                    asset_data.get('AssetType', 'Stock'),
+                    clean_value(asset_data.get('MarketCapitalization'), 'int'),
+                    clean_value(asset_data.get('EBITDA'), 'int'),
+                    clean_value(asset_data.get('PERatio'), 'float'),
+                    clean_value(asset_data.get('PEGRatio'), 'float'),
+                    clean_value(asset_data.get('BookValue'), 'float'),
+                    clean_value(asset_data.get('DividendPerShare'), 'float'),
+                    clean_value(asset_data.get('DividendYield'), 'float'),
+                    clean_value(asset_data.get('EPS'), 'float'),
+                    clean_value(asset_data.get('RevenuePerShareTTM'), 'float'),
+                    clean_value(asset_data.get('ProfitMargin'), 'float'),
+                    clean_value(asset_data.get('OperatingMarginTTM'), 'float'),
+                    clean_value(asset_data.get('ReturnOnAssetsTTM'), 'float'),
+                    clean_value(asset_data.get('ReturnOnEquityTTM'), 'float'),
+                    clean_value(asset_data.get('RevenueTTM'), 'int'),
+                    clean_value(asset_data.get('GrossProfitTTM'), 'int'),
+                    clean_value(asset_data.get('DilutedEPSTTM'), 'float'),
+                    clean_value(asset_data.get('QuarterlyEarningsGrowthYOY'), 'float'),
+                    clean_value(asset_data.get('QuarterlyRevenueGrowthYOY'), 'float'),
+                    clean_value(asset_data.get('AnalystTargetPrice'), 'float'),
+                    clean_value(asset_data.get('TrailingPE'), 'float'),
+                    clean_value(asset_data.get('ForwardPE'), 'float'),
+                    clean_value(asset_data.get('PriceToSalesRatioTTM'), 'float'),
+                    clean_value(asset_data.get('PriceToBookRatio'), 'float'),
+                    clean_value(asset_data.get('EVToRevenue'), 'float'),
+                    clean_value(asset_data.get('EVToEBITDA'), 'float'),
+                    clean_value(asset_data.get('Beta'), 'float'),
+                    clean_value(asset_data.get('52WeekHigh'), 'float'),
+                    clean_value(asset_data.get('52WeekLow'), 'float'),
+                    clean_value(asset_data.get('50DayMovingAverage'), 'float'),
+                    clean_value(asset_data.get('200DayMovingAverage'), 'float'),
+                    clean_value(asset_data.get('SharesOutstanding'), 'int'),
+                    clean_value(asset_data.get('DividendDate'), 'date'),
+                    clean_value(asset_data.get('ExDividendDate'), 'date')
+                )
+        
+            print(f"Number of values: {len(values)}")
+            cursor.execute(insert_sql, values)
             
             self.connection.commit()
             print(f"Inserted/updated asset: {asset_data.get('Symbol')}")
@@ -407,7 +411,6 @@ class FinancialDatabase:
         # Count records in each table
         tables = ['assets', 'daily_prices', 'economic_indicators', 
                  'sector_performance', 'market_indices', 'volatility_data']
-        print(os.getcwd())
         for table in tables:
             cursor = self.connection.cursor()
             cursor.execute(f"SELECT COUNT(*) FROM {table}")
@@ -459,9 +462,9 @@ def setup_database():
     print()
 
     # Initialize database
-    db = FinancialDatabase(db_path="FMA/database/financial_markets.db")
+    db = FinancialDatabase(db_path="database_and_schema/financial_markets.db")
     db.connect()
-    db.create_database(schema_file='FMA/database/schema.sql')
+    db.create_database(schema_file='database_and_schema/schema.sql')
     
     print("\nDatabase created and connection established.")
     print("\n=== NEXT STEPS ===")
@@ -472,6 +475,13 @@ def setup_database():
     
     return db
 
+
+
+
+
+
+
+### Testing Purpose 
 '''
 if __name__ == "__main__":
     # Example usage

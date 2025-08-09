@@ -397,6 +397,12 @@ class FinancialDataCollector:
             }
         }
 
+
+
+
+
+
+'''
 # Example usage (for testing only - no actual collection)
 if __name__ == "__main__":
     # Initialize collector
@@ -423,3 +429,4 @@ if __name__ == "__main__":
     print(f"FRED Economic Data: {'Success' if fred_data is not None else 'Failed/No Key'}")
     
     print("\nData collection module ready for use with main orchestrator!")
+'''
